@@ -29,7 +29,6 @@ def get_images_and_labels(path):
 		faces = faceCascade.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=5, minSize=(30, 30), flags = cv2.cv.CV_HAAR_SCALE_IMAGE)
 		# If face is detected, append the face to images and label the label to labels.
 		for(x, y, w, h) in faces:
-			i = i + 1
 			images.append(image[y: y + h, x: x + w])
 			labels.append(nbr)
 	return images, labels
@@ -41,6 +40,9 @@ images, labels = get_images_and_labels(path)
 print "Training..."
 recognizer.train(np.array(images), np.array(labels))
 
-predict_image = cv2.imread('/home/root/Project2/yalefaces/subject01.wink.png', cv2.CV_LOAD_IMAGE_GRAYSCALE)
-predicted = recognizer.predict(predict_image)
-print predicted
+# Try to predict a face
+predict_image = cv2.imread('yalefaces/subject01.wink.png', cv2.CV_LOAD_IMAGE_GRAYSCALE)
+faces = faceCascade.detectMultiScale(predict_image,scaleFactor=1.1,minNeighbors=5, minSize=(30, 30), flags = cv2.cv.CV_HAAR_SCALE_IMAGE)
+for(x, y, w, h) in faces:
+	predicted = recognizer.predict(predict_image[y: y + h, x: x + w])
+	print predicted
