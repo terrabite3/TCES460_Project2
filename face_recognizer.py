@@ -5,8 +5,14 @@ import cv2, os
 import numpy as np
 from PIL import Image
 
+TRAINING_FILE = 'training.xml'
+
 # For face detection we will use the Haar Cascade provided by OpenCV
 faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+
+# Check to see if training file already exists
+def is_non_zero_file(fpath):
+	return True if os.path.isfile(fpath) and os.path.getsize(fpath) > 0 else False
 
 # For face recognition we will use the LBPH Face Recognizer
 recognizer = cv2.createLBPHFaceRecognizer()
@@ -33,15 +39,25 @@ def get_images_and_labels(path):
 			labels.append(nbr)
 	return images, labels
 
-path = 'yalefaces'
-images, labels = get_images_and_labels(path)
+# Checking a trained file already exists
+if is_non_zero_file(TRAINING_FILE):
+	print "Loading training file..."
+	recognizer.load(TRAINING_FILE)
+else:
+	path = 'yalefaces'
+	images, labels = get_images_and_labels(path)
 
-# Perform the training
-print "Training..."
-recognizer.train(np.array(images), np.array(labels))
+	# Perform the training
+	print "Training..."
+	recognizer.train(np.array(images), np.array(labels))
+
+	# Save recongizer results
+	recognizer.save(TRAINING_FILE)
+	print 'Training data save to', TRAINING_FILE
 
 # Try to predict a face
-predict_image = cv2.imread('yalefaces/subject01.wink.png', cv2.CV_LOAD_IMAGE_GRAYSCALE)
+predict_image = cv2.imread('yalefaces/subject01.wink.png', 
+cv2.CV_LOAD_IMAGE_GRAYSCALE)
 faces = faceCascade.detectMultiScale(predict_image,scaleFactor=1.1,minNeighbors=5, minSize=(30, 30), flags = cv2.cv.CV_HAAR_SCALE_IMAGE)
 for(x, y, w, h) in faces:
 	predicted = recognizer.predict(predict_image[y: y + h, x: x + w])
