@@ -3,8 +3,13 @@
 import cv2, os
 import numpy
 import trainer
+import socket
 
 TRAINING_FILE = 'training.xml'
+
+# Stefan's hardcoded IP address, dynamic
+HOST_IP = '10.16.3.253'
+HOST_PORT = 5001
 
 # For face recognition we will use the LBPH Face Recognizer
 recognizer = cv2.createLBPHFaceRecognizer()
@@ -17,7 +22,23 @@ def is_non_zero_file(fpath):
 def take_picture():
 	cam = cv2.VideoCapture(0)
 	ret, img = cam.read()
-	return img
+	
+	socket.settimeout(1)
+	sock = socket.socket()
+	neterror = sock.connect_ex((HOST_IP, HOST_PORT))
+	if neterror:
+		return img
+	else:
+		encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
+		result, imgencode = cv2.imencode('.jpg', img, encode_param)
+		data = numpy.array(imgencode)
+		stringData = data.tostring()
+
+		sock.send( str(len(stringData)).ljust(16));
+		sock.send( stringData );
+		sock.close()
+	
+		return img
 
 def save_picture(path, pictureName, img):
 	cv2.imwrite(path + "/" + pictureName, img)
