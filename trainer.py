@@ -2,6 +2,7 @@
 
 import cv2, os
 import numpy as np
+import time
 from PIL import Image
 
 TRAINING_FILE = 'training.xml'
@@ -36,8 +37,7 @@ def get_images_and_labels(path):
 	return images, labels
 
 	
-def train_2():
-	path = 'saved_pictures'
+def train_2(path):
 	images, labels = get_images_and_labels(path)
 
 	# Checks if training file already exists
@@ -54,3 +54,5 @@ def train_2():
        		recognizer.train(np.array(images), np.array(labels))
 		recognizer.save(TRAINING_FILE)
 		print 'Training file created and data saved to',TRAINING_FILE
+
+

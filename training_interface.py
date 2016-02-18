@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import os
 
+MAX_PICTURES = 10
 BUTTON_PIN = 2
 button = mraa.Gpio(BUTTON_PIN)
 button.dir(mraa.DIR_IN)
@@ -33,7 +34,7 @@ myLCD.write("to begin training")
 
 def take_pictures():
 	num_pics = 1
-	while(num_pics < 6):
+	while(num_pics < (MAX_PICTURES + 1)):
 		myLCD.clear()
 		myLCD.setColor(255, 255, 0)
 		myLCD.setCursor(0, 0)
@@ -42,35 +43,42 @@ def take_pictures():
                 time.sleep(1)
                 myLCD.write("2...")
                 time.sleep(1)
-                myLCD.write("3...")
+		myLCD.write("3...")
 		time.sleep(1)
 		myLCD.clear()
 		myLCD.write("Taking picture")
 		myLCD.setCursor(1, 0)
 		myLCD.write("number %d" %num_pics)
+		time.sleep(1)
 		img = recognizer.take_picture()
 		myLCD.clear()
+		myLCD.setColor(255, 255, 0)
 		myLCD.setCursor(0, 0)
 		myLCD.write("Processing...")
-		myLCD.clear()
+		time.sleep(.5)
 		gc_img = recognizer.check_for_face(img)
 		if len(gc_img) == 1:
 			pic_name = "subject"+str(subject_number)+"."+"picture"+str(num_pics)+".png"
-			recognizer.save_picture('temp_pics_for_training',pic_name, img)
+			recognizer.save_picture('temp_pics_for_training',pic_name, gc_img[0])
 			num_pics = num_pics + 1
+			myLCD.clear()
 			myLCD.setColor(0, 255, 0)
 			myLCD.write("Success!")
+			time.sleep(1)
 		elif len(gc_img) > 1:
+			myLCD.clear()
 			myLCD.setColor(255, 0, 0)
                         myLCD.write("Faces > 1.")
                         myLCD.setCursor(1,0)
-                        myLCD.write("... try again.") 
+                        myLCD.write("... try again.")
+			time.sleep(1) 
 		else:
+			myLCD.clear()
 			myLCD.setColor(255, 0, 0)
 			myLCD.write("No face found.")
 			myLCD.setCursor(1,0)
 			myLCD.write("... try again.")
-		time.sleep(1)
+			time.sleep(1)
 
 
 while training:
@@ -93,6 +101,17 @@ while training:
 		for f in listOfFiles:
 			fullPath = src + "/" + f
 			subprocess.Popen("mv" + " " + fullPath + " " + dst,shell=True)
-		trainer.train_2()
+		myLCD.clear()
+	        myLCD.setColor(255, 255, 0)
+        	myLCD.setCursor(0, 0)
+        	myLCD.write("Training images...")
+        	time.sleep(1)
+		trainer.train_2('saved_pictures')
+		myLCD.clear()
+        	myLCD.setColor (0, 255, 0)
+        	myLCD.setCursor(0, 0)
+        	myLCD.write("Training complete")
+	        time.sleep(1)
+
 		training = False
 		
