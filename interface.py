@@ -41,19 +41,10 @@ def authenticate():
 	if images:
 		recognized = recognizer.recognize_face(images)
 		print recognized
-		if recognized == 1:
-			granted()
-		elif recognized == 0:
+		if type(recognized) is str:
 			denied()
 		else:
-			myLCD.clear()
-			myLCD.setColor(255, 0, 0)
-			myLCD.setCursor(0,0)
-			myLCD.write("Training file")
-			myLCD.setCursor(1,0)
-			myLCD.write("not found!")
-			time.sleep(2)
-			denied()
+			granted()			
 
 def granted():
 	print("TODO: Entering granted() stub")

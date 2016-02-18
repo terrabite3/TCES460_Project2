@@ -35,7 +35,7 @@ def check_for_face(image):
 
 def recognize_face(images):
 	predicted_saved = []
-	face_authorized = false
+	face_authorized = False
 	# Checking a trained file already exists
 	if is_non_zero_file(TRAINING_FILE):
 		print "Loading training file..."
@@ -46,6 +46,9 @@ def recognize_face(images):
 				predicted_saved = predicted
 				face_authorized = true
 	
-
+		if face_authorized:
+			return predicted_saved
+		else: 
+			return "Face not authorized"
 	else:
-		return None
+		return "Training file not found"
