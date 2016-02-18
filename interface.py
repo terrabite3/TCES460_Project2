@@ -4,6 +4,7 @@ import pyupm_i2clcd as lcd
 import time
 import random
 import recognizer
+import training_interface
 
 from Servo import *
 
@@ -88,7 +89,9 @@ def greeting():
 BUTTON_PIN = 2
 TRAINING_BUTTON_PIN = 8
 button = mraa.Gpio(BUTTON_PIN)
+training_button = mraa.Gpio(TRAINING_BUTTON_PIN)
 button.dir(mraa.DIR_IN)
+training_button.dir(mraa.DIR_IN)
 
 ## The LCD can only display 16 characters per line
 myLCD = lcd.Jhd1313m1(0, 0x3E, 0x62)
@@ -102,5 +105,7 @@ while True:
 
 	if button.read():
 		authenticate() 
+	if training_button.read():
+		training_interface.begin_training()
         greeting()
 	time.sleep(0.1)

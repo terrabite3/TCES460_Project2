@@ -81,37 +81,35 @@ def take_pictures():
 			time.sleep(1)
 
 
-while training:
-	if button.read():
-		myLCD.clear()
-		myLCD.setColor(255, 255, 255)
-		myLCD.setCursor(0, 0)
-		myLCD.write("Enter name")
-		myLCD.setCursor(1, 0)
-		myLCD.write("using computer")
+def begin_training():
+	myLCD.clear()
+	myLCD.setColor(255, 255, 255)
+	myLCD.setCursor(0, 0)
+	myLCD.write("Enter name")
+	myLCD.setCursor(1, 0)
+	myLCD.write("using computer")
 
-		name = raw_input('Enter name: ')
-		file = csv.writer(open('subjects.csv', 'a'))
-		file.writerow([subject_number, name])
-		take_pictures()
-		time.sleep(2)
-		src = "temp_pics_for_training"
-		dst = "saved_pictures"
-		listOfFiles = os.listdir(src)
-		for f in listOfFiles:
-			fullPath = src + "/" + f
-			subprocess.Popen("mv" + " " + fullPath + " " + dst,shell=True)
-		myLCD.clear()
-	        myLCD.setColor(255, 255, 0)
-        	myLCD.setCursor(0, 0)
-        	myLCD.write("Training images...")
-        	time.sleep(1)
-		trainer.train_2('saved_pictures')
-		myLCD.clear()
-        	myLCD.setColor (0, 255, 0)
-        	myLCD.setCursor(0, 0)
-        	myLCD.write("Training complete")
-	        time.sleep(1)
+	name = raw_input('Enter name: ')
+	file = csv.writer(open('subjects.csv', 'a'))
+	file.writerow([subject_number, name])
+	take_pictures()
+	time.sleep(2)
+	src = "temp_pics_for_training"
+	dst = "saved_pictures"
+	listOfFiles = os.listdir(src)
+	for f in listOfFiles:
+		fullPath = src + "/" + f
+		subprocess.Popen("mv" + " " + fullPath + " " + dst,shell=True)
+	myLCD.clear()
+        myLCD.setColor(255, 255, 0)
+       	myLCD.setCursor(0, 0)
+       	myLCD.write("Training images...")
+       	time.sleep(1)
+	trainer.train_2('saved_pictures')
+	myLCD.clear()
+       	myLCD.setColor (0, 255, 0)
+       	myLCD.setCursor(0, 0)
+       	myLCD.write("Training complete")
+        time.sleep(1)
 
-		training = False
 		
