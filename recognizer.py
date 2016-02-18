@@ -42,6 +42,7 @@ def recognize_face(images):
 		recognizer.load(TRAINING_FILE)
 		for image in images:
 			predicted = recognizer.predict(image)
+			print predicted
 			if predicted[1] < 100:
 				predicted_saved = predicted
 				face_authorized = true

@@ -33,7 +33,7 @@ myLCD.write("to begin training")
 
 def take_pictures():
 	num_pics = 1
-	while(num_pics < 31):
+	while(num_pics < 6):
 		myLCD.clear()
 		myLCD.setColor(0, 0, 100)
 		myLCD.setCursor(0, 0)
