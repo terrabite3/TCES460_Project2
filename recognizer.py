@@ -19,8 +19,8 @@ def take_picture():
 	ret, img = cam.read()
 	return img
 
-def save_picture(pictureName, img):
-	cv2.imwrite("temp_pics_for_training/" + pictureName, img)
+def save_picture(path, pictureName, img):
+	cv2.imwrite(path + "/" + pictureName, img)
 	return img
 	
 def check_for_face(image):
@@ -43,9 +43,9 @@ def recognize_face(images):
 		for image in images:
 			predicted = recognizer.predict(image)
 			print predicted
-			if predicted[1] < 100:
+			if predicted[1] < 20:
 				predicted_saved = predicted
-				face_authorized = true
+				face_authorized = True
 	
 		if face_authorized:
 			return predicted_saved

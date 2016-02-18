@@ -30,21 +30,23 @@ def get_images_and_labels(path):
 		faces = faceCascade.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=5, minSize=(30, 30), flags = cv2.cv.CV_HAAR_SCALE_IMAGE)
 		# If face is detected, append the face to images and label the label to labels.
 		for(x, y, w, h) in faces:
-			images.append(image[y: y + h, x: x + w])
+			images.append(gray[y: y + h, x: x + w])
 			labels.append(nbr)
+		print nbr
 	return images, labels
 
 	
 def train_2():
-	path = 'temp_pics_for_training'
+	path = 'saved_pictures'
 	images, labels = get_images_and_labels(path)
 
 	# Checks if training file already exists
 	if os.path.exists(TRAINING_FILE):
 		# Updates the training file
 		print "Updating trainer..."
-		recognizer.load(TRAINING_FILE)
-		recognizer.update(np.array(images), np.array(labels))
+		os.remove(TRAINING_FILE)
+		recognizer.train(np.array(images), np.array(labels))
+		recognizer.save(TRAINING_FILE)
 		print 'Training file saved to', TRAINING_FILE
 	else:
 		# Perform the training

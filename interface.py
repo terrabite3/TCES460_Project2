@@ -39,6 +39,8 @@ def find_face():
 def authenticate():
 	images = find_face()
 	if images:
+		for image in images:
+			recognizer.save_picture("yalefaces", "accessimage.png", image)
 		recognized = recognizer.recognize_face(images)
 		print recognized
 		if type(recognized) is str:

@@ -35,7 +35,7 @@ def take_pictures():
 	num_pics = 1
 	while(num_pics < 6):
 		myLCD.clear()
-		myLCD.setColor(0, 0, 100)
+		myLCD.setColor(255, 255, 0)
 		myLCD.setCursor(0, 0)
 		myLCD.clear()
                 myLCD.write("1...")
@@ -50,14 +50,21 @@ def take_pictures():
 		myLCD.write("number %d" %num_pics)
 		img = recognizer.take_picture()
 		myLCD.clear()
+		myLCD.setCursor(0, 0)
 		myLCD.write("Processing...")
 		myLCD.clear()
-		if len(recognizer.check_for_face(img)) > 0:
+		gc_img = recognizer.check_for_face(img)
+		if len(gc_img) == 1:
 			pic_name = "subject"+str(subject_number)+"."+"picture"+str(num_pics)+".png"
-			recognizer.save_picture(pic_name, img)
+			recognizer.save_picture('temp_pics_for_training',pic_name, img)
 			num_pics = num_pics + 1
 			myLCD.setColor(0, 255, 0)
 			myLCD.write("Success!")
+		elif len(gc_img) > 1:
+			myLCD.setColor(255, 0, 0)
+                        myLCD.write("Faces > 1.")
+                        myLCD.setCursor(1,0)
+                        myLCD.write("... try again.") 
 		else:
 			myLCD.setColor(255, 0, 0)
 			myLCD.write("No face found.")
@@ -80,12 +87,12 @@ while training:
 		file.writerow([subject_number, name])
 		take_pictures()
 		time.sleep(2)
-		trainer.train_2()
 		src = "temp_pics_for_training"
 		dst = "saved_pictures"
 		listOfFiles = os.listdir(src)
 		for f in listOfFiles:
 			fullPath = src + "/" + f
 			subprocess.Popen("mv" + " " + fullPath + " " + dst,shell=True)
+		trainer.train_2()
 		training = False
 		
